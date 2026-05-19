@@ -3,25 +3,28 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Sparkles, Upload, LayoutGrid, User, LogOut, Trophy } from 'lucide-react';
+import { Sparkles, Upload, LayoutGrid, LogOut, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuthStore } from '@/store/auth.store';
+import { useT } from '@/hooks/use-t';
+import { LanguageSwitcher } from '@/components/shared/language-switcher';
 import toast from 'react-hot-toast';
-
-const navLinks = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
-  { href: '/feed', label: 'Explore', icon: LayoutGrid },
-  { href: '/upload', label: 'Rate My Fit', icon: Upload },
-];
 
 export function AppNavbar() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const T = useT();
+
+  const navLinks = [
+    { href: '/dashboard', label: T.nav.dashboard, icon: LayoutGrid },
+    { href: '/feed', label: T.nav.explore, icon: LayoutGrid },
+    { href: '/upload', label: T.nav.rateFit, icon: Upload },
+  ];
 
   async function handleLogout() {
     await logout();
-    toast.success('See you soon!');
+    toast.success(T.common.logout);
     router.push('/');
   }
 
@@ -44,7 +47,7 @@ export function AppNavbar() {
             <Link href={link.href} className="text-white/60 hover:text-white">
               {link.href === '/upload' ? (
                 <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg px-3 py-1 text-xs font-bold">
-                  + Rate Fit
+                  + {link.label}
                 </span>
               ) : (
                 link.label
@@ -60,6 +63,7 @@ export function AppNavbar() {
       </div>
 
       <div className="flex items-center gap-3">
+        <LanguageSwitcher />
         {user && (
           <Link href={`/profile/${user.username}`}>
             <Avatar className="w-8 h-8 cursor-pointer ring-2 ring-purple-500/30 hover:ring-purple-500/60 transition-all">
@@ -70,12 +74,7 @@ export function AppNavbar() {
             </Avatar>
           </Link>
         )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleLogout}
-          className="text-white/30 hover:text-white/60"
-        >
+        <Button variant="ghost" size="icon" onClick={handleLogout} className="text-white/30 hover:text-white/60">
           <LogOut className="w-4 h-4" />
         </Button>
       </div>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Sparkles, Zap, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/hooks/use-t';
 
 const floatingCards = [
   { score: 9.2, vibe: 'Old Money', emoji: '👑', top: '20%', left: '5%', delay: 0 },
@@ -13,15 +14,14 @@ const floatingCards = [
 ];
 
 export function LandingHero() {
+  const T = useT();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-      {/* Background glow effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-purple-600/15 rounded-full blur-[120px]" />
         <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-pink-600/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-1/4 right-1/3 w-[300px] h-[300px] bg-orange-600/8 rounded-full blur-[80px]" />
-
-        {/* Grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -32,7 +32,6 @@ export function LandingHero() {
         />
       </div>
 
-      {/* Floating score cards */}
       {floatingCards.map((card, i) => (
         <motion.div
           key={i}
@@ -61,7 +60,6 @@ export function LandingHero() {
       ))}
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-        {/* Label */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,38 +67,34 @@ export function LandingHero() {
           className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 border border-purple-500/20"
         >
           <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span className="text-sm text-purple-300 font-medium">Powered by GPT-4o Vision</span>
+          <span className="text-sm text-purple-300 font-medium">{T.hero.badge}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-xs text-green-400">Live</span>
+          <span className="text-xs text-green-400">{T.hero.live}</span>
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
           className="text-6xl sm:text-7xl md:text-8xl font-black text-white leading-[0.9] tracking-tight mb-6"
         >
-          Your AI
+          {T.hero.headline1}
           <br />
-          <span className="gradient-text">Fashion Judge</span>
+          <span className="gradient-text">{T.hero.headline2}</span>
           <br />
-          is ready.
+          {T.hero.headline3}
         </motion.h1>
 
-        {/* Subheadline */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-xl md:text-2xl text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          Upload your outfit. Get a brutally honest score, vibe analysis,
-          and style tips — in seconds.{' '}
-          <span className="text-white/70">No sugarcoating. Just facts.</span>
+          {T.hero.sub}{' '}
+          <span className="text-white/70">{T.hero.subBold}</span>
         </motion.p>
 
-        {/* CTA buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -110,19 +104,18 @@ export function LandingHero() {
           <Button size="xl" variant="glow" asChild>
             <Link href="/register">
               <Zap className="w-5 h-5" />
-              Rate my outfit
+              {T.hero.cta1}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </Button>
           <Button size="xl" variant="outline" asChild>
             <Link href="/feed">
               <Star className="w-5 h-5" />
-              Explore fits
+              {T.hero.cta2}
             </Link>
           </Button>
         </motion.div>
 
-        {/* Social proof */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -132,29 +125,23 @@ export function LandingHero() {
           <div className="flex items-center gap-2">
             <div className="flex -space-x-2">
               {['🧑', '👩', '🧔', '👸', '🙎'].map((e, i) => (
-                <div
-                  key={i}
-                  className="w-7 h-7 rounded-full glass border border-white/10 flex items-center justify-center text-sm"
-                >
+                <div key={i} className="w-7 h-7 rounded-full glass border border-white/10 flex items-center justify-center text-sm">
                   {e}
                 </div>
               ))}
             </div>
-            <span>10K+ outfits rated</span>
+            <span>{T.hero.social1}</span>
           </div>
           <span className="hidden sm:block text-white/20">·</span>
           <div className="flex items-center gap-1.5">
-            {'⭐⭐⭐⭐⭐'.split('').map((s, i) => (
-              <span key={i}>{s}</span>
-            ))}
-            <span>4.9/5 rating</span>
+            {'⭐⭐⭐⭐⭐'.split('').map((s, i) => <span key={i}>{s}</span>)}
+            <span>{T.hero.social2}</span>
           </div>
           <span className="hidden sm:block text-white/20">·</span>
-          <span>Free forever</span>
+          <span>{T.hero.social3}</span>
         </motion.div>
       </div>
 
-      {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#080808] to-transparent" />
     </section>
   );

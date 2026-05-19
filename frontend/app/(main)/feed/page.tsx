@@ -6,22 +6,24 @@ import { TrendingUp, Clock, Star, Flame } from 'lucide-react';
 import { OutfitCard } from '@/components/outfit/outfit-card';
 import { feedApi } from '@/lib/api';
 import { Outfit } from '@/lib/types';
+import { useT } from '@/hooks/use-t';
 
 type SortOption = 'latest' | 'trending' | 'top';
 
-const sortOptions: { value: SortOption; label: string; icon: React.ElementType }[] = [
-  { value: 'latest', label: 'Latest', icon: Clock },
-  { value: 'trending', label: 'Trending', icon: TrendingUp },
-  { value: 'top', label: 'Top Rated', icon: Star },
-];
-
 export default function FeedPage() {
+  const T = useT();
   const [outfits, setOutfits] = useState<Outfit[]>([]);
   const [sort, setSort] = useState<SortOption>('latest');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  const sortOptions: { value: SortOption; label: string; icon: React.ElementType }[] = [
+    { value: 'latest', label: T.feed.latest, icon: Clock },
+    { value: 'trending', label: T.feed.trending, icon: TrendingUp },
+    { value: 'top', label: T.feed.top, icon: Star },
+  ];
 
   const fetchFeed = useCallback(async (s: SortOption, p: number, append = false) => {
     p === 1 ? setLoading(true) : setLoadingMore(true);
@@ -52,23 +54,19 @@ export default function FeedPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-black text-white">Explore</h1>
-          <p className="text-white/40 text-sm mt-1">See what the community is wearing</p>
+          <h1 className="text-3xl font-black text-white">{T.feed.title}</h1>
+          <p className="text-white/40 text-sm mt-1">{T.feed.sub}</p>
         </div>
 
-        {/* Sort tabs */}
         <div className="flex items-center glass rounded-xl p-1 gap-1">
           {sortOptions.map((opt) => (
             <button
               key={opt.value}
               onClick={() => setSort(opt.value)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                sort === opt.value
-                  ? 'bg-white/10 text-white'
-                  : 'text-white/40 hover:text-white/60'
+                sort === opt.value ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'
               }`}
             >
               <opt.icon className="w-3.5 h-3.5" />
@@ -78,7 +76,6 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* Grid */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {[...Array(12)].map((_, i) => (
@@ -88,13 +85,10 @@ export default function FeedPage() {
       ) : outfits.length === 0 ? (
         <div className="text-center py-24">
           <div className="text-6xl mb-4">🕳️</div>
-          <p className="text-white/40">No outfits here yet. Be the first!</p>
+          <p className="text-white/40">{T.feed.empty}</p>
         </div>
       ) : (
-        <motion.div
-          layout
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        >
+        <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {outfits.map((outfit, i) => (
             <motion.div
               key={outfit.id}
@@ -108,7 +102,6 @@ export default function FeedPage() {
         </motion.div>
       )}
 
-      {/* Load more */}
       {hasMore && !loading && (
         <div className="text-center mt-10">
           <button
@@ -121,7 +114,7 @@ export default function FeedPage() {
             ) : (
               <>
                 <Flame className="w-4 h-4 inline mr-2" />
-                Load more
+                {T.feed.loadMore}
               </>
             )}
           </button>

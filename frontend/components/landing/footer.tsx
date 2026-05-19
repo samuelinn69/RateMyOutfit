@@ -1,7 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
+import { useT } from '@/hooks/use-t';
 
 export function LandingFooter() {
+  const T = useT();
+
   return (
     <footer className="border-t border-white/5 py-12 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -13,20 +18,14 @@ export function LandingFooter() {
         </div>
 
         <div className="flex items-center gap-8">
-          {['Privacy', 'Terms', 'Blog', 'API'].map((item) => (
-            <Link
-              key={item}
-              href="#"
-              className="text-sm text-white/30 hover:text-white/60 transition-colors"
-            >
+          {T.footer.links.map((item) => (
+            <Link key={item} href="#" className="text-sm text-white/30 hover:text-white/60 transition-colors">
               {item}
             </Link>
           ))}
         </div>
 
-        <p className="text-white/20 text-sm">
-          © 2026 RateMyOutfit. Built with ❤️ and GPT-4o.
-        </p>
+        <p className="text-white/20 text-sm">{T.footer.copy}</p>
       </div>
     </footer>
   );

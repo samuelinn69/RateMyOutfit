@@ -8,22 +8,14 @@ import { Upload, X, Sparkles, Flame, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useOutfitStore } from '@/store/outfit.store';
 import { outfitsApi } from '@/lib/api';
+import { useT } from '@/hooks/use-t';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 
-const ANALYSIS_STEPS = [
-  'Scanning your outfit...',
-  'Detecting vibe and style...',
-  'Analyzing colors and fit...',
-  'Calculating scores...',
-  'Writing your roast...',
-  'Almost done...',
-];
-
 export default function UploadPage() {
   const router = useRouter();
-  const { setCurrentOutfit, setAnalyzing, setPreviewUrl, isAnalyzing, previewUrl } =
-    useOutfitStore();
+  const T = useT();
+  const { setCurrentOutfit, setAnalyzing, setPreviewUrl, isAnalyzing, previewUrl } = useOutfitStore();
 
   const [file, setFile] = useState<File | null>(null);
   const [roastMode, setRoastMode] = useState(false);
@@ -47,13 +39,13 @@ export default function UploadPage() {
   });
 
   async function handleAnalyze() {
-    if (!file) return toast.error('Please select an image first');
+    if (!file) return toast.error(T.upload.noFile);
 
     setAnalyzing(true);
     setStepIndex(0);
 
     const interval = setInterval(() => {
-      setStepIndex((i) => (i < ANALYSIS_STEPS.length - 1 ? i + 1 : i));
+      setStepIndex((i) => (i < T.upload.steps.length - 1 ? i + 1 : i));
     }, 1200);
 
     try {
@@ -65,11 +57,11 @@ export default function UploadPage() {
 
       const { data } = await outfitsApi.upload(formData);
       setCurrentOutfit(data.data);
-      toast.success('Analysis complete! 🔥');
+      toast.success(T.upload.toastSuccess);
       router.push(`/outfit/${data.data.id}`);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { error?: string } } };
-      toast.error(error?.response?.data?.error || 'Analysis failed, try again');
+      toast.error(error?.response?.data?.error || T.upload.toastError);
     } finally {
       clearInterval(interval);
       setAnalyzing(false);
@@ -84,8 +76,8 @@ export default function UploadPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
-          <h1 className="text-4xl font-black text-white mb-2">Rate my outfit</h1>
-          <p className="text-white/40">Drop a photo. Get roasted. Glow up.</p>
+          <h1 className="text-4xl font-black text-white mb-2">{T.upload.title}</h1>
+          <p className="text-white/40">{T.upload.sub}</p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -104,7 +96,7 @@ export default function UploadPage() {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-white mb-3">AI is judging...</h2>
+              <h2 className="text-xl font-bold text-white mb-3">{T.upload.analyzing}</h2>
               <AnimatePresence mode="wait">
                 <motion.p
                   key={stepIndex}
@@ -113,7 +105,7 @@ export default function UploadPage() {
                   exit={{ opacity: 0, y: -10 }}
                   className="text-white/40 text-sm"
                 >
-                  {ANALYSIS_STEPS[stepIndex]}
+                  {T.upload.steps[stepIndex]}
                 </motion.p>
               </AnimatePresence>
 
@@ -131,7 +123,6 @@ export default function UploadPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="space-y-4"
             >
-              {/* Drop zone */}
               <div
                 {...getRootProps()}
                 className={`glass rounded-3xl p-8 text-center cursor-pointer transition-all duration-200 border-2 border-dashed ${
@@ -157,7 +148,7 @@ export default function UploadPage() {
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <p className="text-white/40 text-sm mt-4">Click to change photo</p>
+                    <p className="text-white/40 text-sm mt-4">{T.upload.dropChange}</p>
                   </div>
                 ) : (
                   <>
@@ -165,25 +156,21 @@ export default function UploadPage() {
                       <Upload className="w-7 h-7 text-white/30" />
                     </div>
                     <p className="text-white font-semibold mb-1">
-                      {isDragActive ? 'Drop it here!' : 'Drop your outfit here'}
+                      {isDragActive ? T.upload.dropActive : T.upload.dropIdle}
                     </p>
-                    <p className="text-white/30 text-sm">
-                      JPG, PNG, WebP up to 10MB
-                    </p>
+                    <p className="text-white/30 text-sm">{T.upload.dropHint}</p>
                   </>
                 )}
               </div>
 
-              {/* Title */}
               <input
                 type="text"
-                placeholder="Give your fit a title (optional)"
+                placeholder={T.upload.titlePlaceholder}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full glass rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/30 border border-white/10 focus:outline-none focus:border-purple-500/50 transition-colors"
               />
 
-              {/* Options */}
               <div className="flex gap-3">
                 <button
                   onClick={() => setRoastMode(!roastMode)}
@@ -194,7 +181,7 @@ export default function UploadPage() {
                   }`}
                 >
                   <Flame className="w-4 h-4" />
-                  Roast mode {roastMode ? 'ON' : 'OFF'}
+                  {roastMode ? T.upload.roastOn : T.upload.roastOff}
                 </button>
 
                 <button
@@ -205,7 +192,7 @@ export default function UploadPage() {
                       : 'glass border border-white/10 text-white/40 hover:border-white/20'
                   }`}
                 >
-                  {isPublic ? '🌍 Public' : '🔒 Private'}
+                  {isPublic ? T.upload.public : T.upload.private}
                 </button>
               </div>
 
@@ -217,7 +204,7 @@ export default function UploadPage() {
                 disabled={!file || isAnalyzing}
               >
                 <Zap className="w-4 h-4" />
-                Analyze my outfit
+                {T.upload.analyze}
               </Button>
             </motion.div>
           )}

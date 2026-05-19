@@ -8,8 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { feedApi } from '@/lib/api';
 import { User } from '@/lib/types';
 import { BADGE_META } from '@/lib/utils';
+import { useT } from '@/hooks/use-t';
 
 export default function LeaderboardPage() {
+  const T = useT();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,9 +28,9 @@ export default function LeaderboardPage() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <div className="flex items-center gap-3 mb-2">
           <Trophy className="w-6 h-6 text-yellow-400" />
-          <h1 className="text-3xl font-black text-white">Style Leaderboard</h1>
+          <h1 className="text-3xl font-black text-white">{T.leaderboard.title}</h1>
         </div>
-        <p className="text-white/40">The highest-rated style icons in the community.</p>
+        <p className="text-white/40">{T.leaderboard.sub}</p>
       </motion.div>
 
       {loading ? (
@@ -50,7 +52,6 @@ export default function LeaderboardPage() {
                 href={`/profile/${user.username}`}
                 className="flex items-center gap-4 p-4 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors last:border-0"
               >
-                {/* Rank */}
                 <div className="w-8 text-center shrink-0">
                   {i === 0 ? (
                     <Crown className="w-5 h-5 text-yellow-400 mx-auto" />
@@ -63,16 +64,9 @@ export default function LeaderboardPage() {
                   )}
                 </div>
 
-                {/* Avatar */}
                 <Avatar
                   className={`w-10 h-10 ${
-                    i === 0
-                      ? 'ring-2 ring-yellow-400/50'
-                      : i === 1
-                        ? 'ring-2 ring-gray-400/30'
-                        : i === 2
-                          ? 'ring-2 ring-orange-500/30'
-                          : ''
+                    i === 0 ? 'ring-2 ring-yellow-400/50' : i === 1 ? 'ring-2 ring-gray-400/30' : i === 2 ? 'ring-2 ring-orange-500/30' : ''
                   }`}
                 >
                   <AvatarImage src={user.avatar || undefined} />
@@ -81,7 +75,6 @@ export default function LeaderboardPage() {
                   </AvatarFallback>
                 </Avatar>
 
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-semibold text-sm truncate">
                     {user.displayName || user.username}
@@ -89,7 +82,6 @@ export default function LeaderboardPage() {
                   <div className="text-white/30 text-xs">@{user.username}</div>
                 </div>
 
-                {/* Badges */}
                 <div className="flex gap-1">
                   {user.badges?.slice(0, 2).map((b) => (
                     <span key={b} title={BADGE_META[b]?.label} className="text-sm">
@@ -98,12 +90,11 @@ export default function LeaderboardPage() {
                   ))}
                 </div>
 
-                {/* Score */}
                 <div className="text-right shrink-0">
                   <div className="text-yellow-400 font-black">
                     {user.avgScore?.toFixed(1) || '—'}
                   </div>
-                  <div className="text-white/30 text-xs">{user.totalOutfits} fits</div>
+                  <div className="text-white/30 text-xs">{user.totalOutfits} {T.leaderboard.fits}</div>
                 </div>
               </Link>
             </motion.div>
@@ -112,7 +103,7 @@ export default function LeaderboardPage() {
           {users.length === 0 && (
             <div className="p-12 text-center">
               <Star className="w-8 h-8 text-white/20 mx-auto mb-3" />
-              <p className="text-white/30">No rankings yet. Be the first!</p>
+              <p className="text-white/30">{T.leaderboard.empty}</p>
             </div>
           )}
         </div>

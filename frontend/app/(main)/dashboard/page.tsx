@@ -10,9 +10,11 @@ import { useAuthStore } from '@/store/auth.store';
 import { outfitsApi } from '@/lib/api';
 import { Outfit } from '@/lib/types';
 import { BADGE_META } from '@/lib/utils';
+import { useT } from '@/hooks/use-t';
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
+  const T = useT();
   const [outfits, setOutfits] = useState<Outfit[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,21 +32,13 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
-      {/* Welcome header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-10"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <h1 className="text-4xl font-black text-white mb-2">
           {greeting}, {user?.displayName || user?.username}. 👋
         </h1>
-        <p className="text-white/40">
-          Ready to see how your fits score today?
-        </p>
+        <p className="text-white/40">{T.dashboard.ready}</p>
       </motion.div>
 
-      {/* Stats */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -52,34 +46,10 @@ export default function DashboardPage() {
         className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"
       >
         {[
-          {
-            icon: Star,
-            label: 'Avg Score',
-            value: user?.avgScore ? user.avgScore.toFixed(1) : '—',
-            color: 'text-yellow-400',
-            bg: 'bg-yellow-400/10',
-          },
-          {
-            icon: Upload,
-            label: 'Outfits Rated',
-            value: user?.totalOutfits || 0,
-            color: 'text-purple-400',
-            bg: 'bg-purple-400/10',
-          },
-          {
-            icon: TrendingUp,
-            label: 'Badges',
-            value: user?.badges?.length || 0,
-            color: 'text-green-400',
-            bg: 'bg-green-400/10',
-          },
-          {
-            icon: Zap,
-            label: 'Streak',
-            value: '🔥 Active',
-            color: 'text-orange-400',
-            bg: 'bg-orange-400/10',
-          },
+          { icon: Star, label: T.dashboard.statScore, value: user?.avgScore ? user.avgScore.toFixed(1) : '—', color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
+          { icon: Upload, label: T.dashboard.statOutfits, value: user?.totalOutfits || 0, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+          { icon: TrendingUp, label: T.dashboard.statBadges, value: user?.badges?.length || 0, color: 'text-green-400', bg: 'bg-green-400/10' },
+          { icon: Zap, label: T.dashboard.statStreak, value: T.dashboard.streakValue, color: 'text-orange-400', bg: 'bg-orange-400/10' },
         ].map((stat, i) => (
           <div key={i} className="glass rounded-2xl p-5">
             <div className={`w-9 h-9 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
@@ -91,7 +61,6 @@ export default function DashboardPage() {
         ))}
       </motion.div>
 
-      {/* Badges */}
       {user?.badges && user.badges.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -99,17 +68,13 @@ export default function DashboardPage() {
           transition={{ delay: 0.15 }}
           className="mb-10"
         >
-          <h2 className="text-lg font-bold text-white mb-4">Your badges</h2>
+          <h2 className="text-lg font-bold text-white mb-4">{T.dashboard.yourBadges}</h2>
           <div className="flex flex-wrap gap-3">
             {user.badges.map((badge) => {
               const meta = BADGE_META[badge];
               if (!meta) return null;
               return (
-                <div
-                  key={badge}
-                  className="glass rounded-xl px-4 py-2 flex items-center gap-2"
-                  title={meta.label}
-                >
+                <div key={badge} className="glass rounded-xl px-4 py-2 flex items-center gap-2" title={meta.label}>
                   <span className="text-lg">{meta.emoji}</span>
                   <span className="text-white/70 text-sm font-semibold">{meta.label}</span>
                 </div>
@@ -119,7 +84,6 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
-      {/* Upload CTA */}
       {(!user?.totalOutfits || user.totalOutfits === 0) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -128,21 +92,18 @@ export default function DashboardPage() {
           className="glass rounded-3xl p-10 text-center mb-10 gradient-border"
         >
           <div className="text-6xl mb-4">📸</div>
-          <h2 className="text-2xl font-black text-white mb-3">Rate your first fit</h2>
-          <p className="text-white/40 mb-6 max-w-sm mx-auto">
-            Upload a photo and get a full AI fashion analysis in seconds.
-          </p>
+          <h2 className="text-2xl font-black text-white mb-3">{T.dashboard.firstFitTitle}</h2>
+          <p className="text-white/40 mb-6 max-w-sm mx-auto">{T.dashboard.firstFitSub}</p>
           <Button size="lg" variant="glow" asChild>
             <Link href="/upload">
               <Upload className="w-4 h-4" />
-              Upload your fit
+              {T.dashboard.firstFitBtn}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>
         </motion.div>
       )}
 
-      {/* Recent outfits */}
       {outfits.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -150,10 +111,10 @@ export default function DashboardPage() {
           transition={{ delay: 0.2 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-white">Your recent fits</h2>
+            <h2 className="text-lg font-bold text-white">{T.dashboard.recentFits}</h2>
             <Button variant="ghost" size="sm" asChild>
               <Link href={`/profile/${user?.username}`} className="text-purple-400">
-                See all <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                {T.dashboard.seeAll} <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Link>
             </Button>
           </div>

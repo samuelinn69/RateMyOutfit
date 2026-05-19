@@ -4,8 +4,12 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
+import { useT } from '@/hooks/use-t';
+import { LanguageSwitcher } from '@/components/shared/language-switcher';
 
 export function LandingNavbar() {
+  const T = useT();
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
@@ -21,29 +25,24 @@ export function LandingNavbar() {
       </Link>
 
       <div className="hidden md:flex items-center gap-8">
-        <Link
-          href="#how-it-works"
-          className="text-sm text-white/60 hover:text-white transition-colors"
-        >
-          How it works
+        <Link href="#how-it-works" className="text-sm text-white/60 hover:text-white transition-colors">
+          {T.nav.howItWorks}
         </Link>
-        <Link
-          href="#features"
-          className="text-sm text-white/60 hover:text-white transition-colors"
-        >
-          Features
+        <Link href="#features" className="text-sm text-white/60 hover:text-white transition-colors">
+          {T.nav.features}
         </Link>
         <Link href="/feed" className="text-sm text-white/60 hover:text-white transition-colors">
-          Explore
+          {T.nav.explore}
         </Link>
       </div>
 
       <div className="flex items-center gap-3">
+        <LanguageSwitcher />
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/login">Sign in</Link>
+          <Link href="/login">{T.nav.signIn}</Link>
         </Button>
         <Button size="sm" asChild>
-          <Link href="/register">Get started free</Link>
+          <Link href="/register">{T.nav.getStarted}</Link>
         </Button>
       </div>
     </motion.nav>
