@@ -3,12 +3,14 @@ services:
   - name: web
     type: web
     git:
-      branch: main
+      branch: master
       workdir: frontend
     dockerfile:
       dockerfile: Dockerfile
     instance_types:
-      - type: nano
+      - type: eco-nano
+    regions:
+      - was
     ports:
       - port: 3000
         protocol: http
@@ -17,8 +19,10 @@ services:
         value: production
       - key: PORT
         value: "3000"
+      # Set this in the Koyeb dashboard after the backend is deployed
+      # - key: NEXT_PUBLIC_API_URL   (your backend Koyeb URL)
     health_checks:
-      - grace_period: 30
+      - grace_period: 60
         interval: 10
         restart_limit: 3
         path: /

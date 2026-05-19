@@ -3,12 +3,14 @@ services:
   - name: api
     type: web
     git:
-      branch: main
+      branch: master
       workdir: backend
     dockerfile:
       dockerfile: Dockerfile
     instance_types:
-      - type: nano
+      - type: eco-nano
+    regions:
+      - was
     ports:
       - port: 4000
         protocol: http
@@ -17,8 +19,17 @@ services:
         value: production
       - key: PORT
         value: "4000"
+      # Set these in the Koyeb dashboard — never commit real secrets
+      # - key: DATABASE_URL
+      # - key: JWT_SECRET
+      # - key: JWT_REFRESH_SECRET
+      # - key: OPENAI_API_KEY
+      # - key: CLOUDINARY_CLOUD_NAME
+      # - key: CLOUDINARY_API_KEY
+      # - key: CLOUDINARY_API_SECRET
+      # - key: FRONTEND_URL
     health_checks:
-      - grace_period: 30
+      - grace_period: 60
         interval: 10
         restart_limit: 3
         path: /health

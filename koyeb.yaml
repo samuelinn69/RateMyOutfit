@@ -1,0 +1,71 @@
+# RateMyOutfit — Koyeb monorepo config
+# Two services: API (backend) + Web (frontend)
+# Deploy from the Koyeb dashboard: App > New App > GitHub > select this repo
+
+name: ratemyoutfit
+
+services:
+  # ── Backend API ──────────────────────────────────────────────────────────────
+  - name: api
+    type: web
+    git:
+      branch: master
+      workdir: backend
+    dockerfile:
+      dockerfile: Dockerfile
+    instance_types:
+      - type: eco-nano
+    regions:
+      - was
+    ports:
+      - port: 4000
+        protocol: http
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      # ⚠️  Add secrets via the Koyeb dashboard (not here)
+      # DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET
+      # OPENAI_API_KEY
+      # CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+      # FRONTEND_URL → your-frontend-name.koyeb.app
+    health_checks:
+      - grace_period: 60
+        interval: 10
+        restart_limit: 3
+        path: /health
+        port: 4000
+        protocol: http
+        timeout: 5
+
+  # ── Frontend Web ─────────────────────────────────────────────────────────────
+  - name: web
+    type: web
+    git:
+      branch: master
+      workdir: frontend
+    dockerfile:
+      dockerfile: Dockerfile
+    instance_types:
+      - type: eco-nano
+    regions:
+      - was
+    ports:
+      - port: 3000
+        protocol: http
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      # ⚠️  Add after the API service is deployed:
+      # NEXT_PUBLIC_API_URL → https://your-api-name.koyeb.app
+    health_checks:
+      - grace_period: 60
+        interval: 10
+        restart_limit: 3
+        path: /
+        port: 3000
+        protocol: http
+        timeout: 5
