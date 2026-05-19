@@ -1,0 +1,27 @@
+name: ratemyoutfit-backend
+services:
+  - name: api
+    type: web
+    git:
+      branch: main
+      workdir: backend
+    dockerfile:
+      dockerfile: Dockerfile
+    instance_types:
+      - type: nano
+    ports:
+      - port: 4000
+        protocol: http
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+    health_checks:
+      - grace_period: 30
+        interval: 10
+        restart_limit: 3
+        path: /health
+        port: 4000
+        protocol: http
+        timeout: 5

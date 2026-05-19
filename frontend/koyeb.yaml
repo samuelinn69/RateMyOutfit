@@ -1,0 +1,27 @@
+name: ratemyoutfit-frontend
+services:
+  - name: web
+    type: web
+    git:
+      branch: main
+      workdir: frontend
+    dockerfile:
+      dockerfile: Dockerfile
+    instance_types:
+      - type: nano
+    ports:
+      - port: 3000
+        protocol: http
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+    health_checks:
+      - grace_period: 30
+        interval: 10
+        restart_limit: 3
+        path: /
+        port: 3000
+        protocol: http
+        timeout: 5
