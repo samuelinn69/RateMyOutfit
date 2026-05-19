@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git config *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'fix: correct Koyeb deploy config \\(master branch, eco-nano, root koyeb.yaml\\) *)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(git commit -m 'fix: add openssl + fix prisma permissions in Docker runner *)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Nueva carpeta\\\\frontend\\\\app\\\\feed\\\\page.tsx\" -Force)",
+      "Bash(git commit *)"
     ]
   }
 }
